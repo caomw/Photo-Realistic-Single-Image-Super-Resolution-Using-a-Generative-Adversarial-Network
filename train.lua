@@ -4,7 +4,8 @@ require 'xlua'
 require 'image'
 dofile 'etc.lua'
 
-params, gradParams = model:getParameters()
+params, gradParams = combine_and_flatten_parameters(GenModel,DisModel)
+
 optimState = {
     learningRate = lr,
     beta1 = b1,
@@ -20,7 +21,8 @@ function train(trainData, trainLabel)
     tot_error = 0
     cnt_error = 0
 
-    model:training()
+    GenModel:training()
+    DisModel:training()
     shuffle = torch.randperm(trainDataSz)
     
     local inputs = torch.CudaTensor(batchSz,inputDim,inputSz,inputSz)
@@ -74,20 +76,30 @@ function train(trainData, trainLabel)
             end
 
             gradParams:zero()
-            output = model:forward(inputs)
-            
-            if loss == "mse" then
-                err = criterion:forward(output,targets)
-                dfdo = criterion:backward(output,targets)
-            elseif loss == "vgg" then
-                vgg_output = VGGNet:forward(output)
-                vgg_target = VGGNet:forward(targets)
-                err = criterion:forward(vgg_output,vgg_target)
-                dfdo = criterion:backward(vgg_output,vgg_target)
-            end
 
-            model:backward(inputs,dfdo)
-            err = err/curBatchDim
+            output_Gen = GenModel:forward(inputs)
+            
+            --mse training
+            MSE_err = mse:forward(output_Gen,targets)
+            MSE_dfdo = mse:backward(output_Gen,targets)
+            GenModel:backward(inputs,dfdo)
+            
+            
+            --GAN training
+            --DisModel training
+            Dis_input = torch.Tensor(2*curBatchDim,inputDim,outputSz,outputSz)
+            Dis_target = torch.Tensor(2*curBatchDim,1)
+            Dis_input[{{1,curBatchDim},{}}] = output_Gen
+            Dis_target[{{1,curBatchDim},{}}] = 1 --give 1 to G
+            Dis_input[{{curBatchDim+1,},{}}] = targets
+            Dis_target[{{curBatchDim+1,},{}}] = 0 --give 0 to R
+
+            output_Dis = DisModel:forward(Dis_input)
+            GAN_err = bce:forward(output_Dis,Dis_target)*1e-3
+            Dis_dfdo = bce:backward(output_Dis,Dis_target)*1e-3
+            DisModel:backward(Dis_input,Dis_dfdo)
+
+            err = MSE_err + GAN_err 
             tot_error = tot_error + err
             cnt_error = cnt_error + 1
             tot_iter = tot_iter + 1
