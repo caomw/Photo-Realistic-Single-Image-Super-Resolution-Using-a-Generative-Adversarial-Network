@@ -2,7 +2,7 @@ mode = "train"
 modelName = "model.net"
 loss = "mse" --"mse" or "vgg"
 continue = false
-continue_iter = 1e5
+continue_iter = 0
 
 db_dir = "/home/mks0601/workspace/Data/SR_ILSVRC2015_val_4_rgb/"
 test_dir = "/home/mks0601/workspace/Data/SR/"
