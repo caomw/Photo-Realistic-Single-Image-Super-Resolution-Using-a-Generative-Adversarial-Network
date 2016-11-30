@@ -1,6 +1,5 @@
 mode = "train"
 modelName = "model.net"
-loss = "mse" --"mse" or "vgg"
 continue = false
 continue_iter = 0
 

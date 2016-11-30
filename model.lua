@@ -50,14 +50,6 @@ prev_fDim = next_fDim
 next_fDim = outputDim
 model:add(cudnn.normalConv(prev_fDim,next_fDim,kernelSz,kernelSz,1,1,(kernelSz-1)/2,(kernelSz-1)/2,0,math.sqrt(2/(kernelSz*kernelSz*prev_fDim))))
 
-VGG_pretrain = torch.load("/home/mks0601/workspace/Model/VGG/vgg_pretrain.t7")
-
-VGGNet = nn.Sequential()
-
-for i = 1,4 do
-    VGGNet:add(VGG_pretrain:get(i))
-end
-
 criterion = nn.MSECriterion()
 
 cudnn.convert(model, cudnn)

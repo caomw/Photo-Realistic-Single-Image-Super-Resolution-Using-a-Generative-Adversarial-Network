@@ -76,18 +76,10 @@ function train(trainData, trainLabel)
             gradParams:zero()
             output = model:forward(inputs)
             
-            if loss == "mse" then
-                err = criterion:forward(output,targets)
-                dfdo = criterion:backward(output,targets)
-            elseif loss == "vgg" then
-                vgg_output = VGGNet:forward(output)
-                vgg_target = VGGNet:forward(targets)
-                err = criterion:forward(vgg_output,vgg_target)
-                dfdo = criterion:backward(vgg_output,vgg_target)
-            end
+            err = criterion:forward(output,targets)
+            dfdo = criterion:backward(output,targets)
 
             model:backward(inputs,dfdo)
-            err = err/curBatchDim
             tot_error = tot_error + err
             cnt_error = cnt_error + 1
             tot_iter = tot_iter + 1
