@@ -1,6 +1,5 @@
 mode = "train"
 modelName = "model.net"
-loss = "mse" --"mse" or "vgg"
 continue = false
 continue_iter = 0
 
@@ -34,7 +33,14 @@ function combine_and_flatten_parameters(...)
       table.insert(parameters, w[i])
       table.insert(gradParameters, g[i])
     end
-    print(nn.Module.flatten(gradParameters):size())
+    if i == 1 then
+        GenParamNum = nn.Module.flatten(gradParameters):size()
+    else
+        DisParamNum = nn.Module.flatten(gradParameters):size()
+    end
+
+    print(GenParamNum,DisParamNum)
+
   end
   return nn.Module.flatten(parameters), nn.Module.flatten(gradParameters)
 end

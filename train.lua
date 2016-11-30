@@ -86,29 +86,52 @@ function train(trainData, trainLabel)
             
             
             --GAN training
-            --DisModel training
-            Dis_input = torch.Tensor(2*curBatchDim,inputDim,outputSz,outputSz)
-            Dis_target = torch.Tensor(2*curBatchDim,1)
-            Dis_input[{{1,curBatchDim},{}}] = output_Gen
-            Dis_target[{{1,curBatchDim},{}}] = 1 --give 1 to G
-            Dis_input[{{curBatchDim+1,},{}}] = targets
-            Dis_target[{{curBatchDim+1,},{}}] = 0 --give 0 to R
+            if train_ == "D" then
+                --DisModel training
+                Dis_input = torch.Tensor(2*curBatchDim,inputDim,outputSz,outputSz)
+                Dis_target = torch.Tensor(2*curBatchDim,1)
+                Dis_input[{{1,curBatchDim},{}}] = output_Gen
+                Dis_target[{{1,curBatchDim},{}}] = 1 --give 1 to G
+                Dis_input[{{curBatchDim+1,},{}}] = targets
+                Dis_target[{{curBatchDim+1,},{}}] = 0 --give 0 to R
 
-            output_Dis = DisModel:forward(Dis_input)
-            GAN_err = bce:forward(output_Dis,Dis_target)*1e-3
-            Dis_dfdo = bce:backward(output_Dis,Dis_target)*1e-3
-            DisModel:backward(Dis_input,Dis_dfdo)
+                output_Dis = DisModel:forward(Dis_input)
+                GAN_err = bce:forward(output_Dis,Dis_target)*1e-3
+                GAN_dfdo = bce:backward(output_Dis,Dis_target)*1e-3
+                DisModel:backward(Dis_input,GAN_dfdo)
+                
+                err = MSE_err + GAN_err 
+                tot_error = tot_error + err
+                cnt_error = cnt_error + 1
+                tot_iter = tot_iter + 1
+                
+                gradParams:div(curBatchDim)
 
-            err = MSE_err + GAN_err 
-            tot_error = tot_error + err
-            cnt_error = cnt_error + 1
-            tot_iter = tot_iter + 1
-            
-            gradParams:div(curBatchDim)
-            return err,gradParams
+            elseif train_ == "G" then
+                --GenModel training
+                output_Dis = DisModel:forward(output_Gen)
+                Dis_target = torch.Tensor(curBatchDim,1):fill(0) --give 0 to G
+                GAN_err = bce:forward(output_Dis,Dis_target)*1e-3
+                GAN_dfdo = bce:backward(output_Dis,Dis_target)*1e-3
+                GAN_dfdi = DisModel:backward(output_Gen,GAN_dfdo)
+                GenModel:backward(inputs,GAN_dfdi)
+
+                err = MSE_err + GAN_err 
+                tot_error = tot_error + err
+                cnt_error = cnt_error + 1
+                tot_iter = tot_iter + 1
+                
+                gradParams:div(curBatchDim)
             end
 
-         optimMethod(feval, params, optimState)
+            return err,gradParams
+            end
+        
+        train_ = "D"
+        optimMethod(feval, params, optimState)
+        train_ = "G"
+        optimMethod(feval, params, optimState)
+
         
         if tot_iter % 1000 == 0 then
             print("iter: " .. tot_iter .. "/" .. iterLimit .. " batch: " ..  t .. "/" .. trainDataSz .. " loss: " .. tot_error/cnt_error)
