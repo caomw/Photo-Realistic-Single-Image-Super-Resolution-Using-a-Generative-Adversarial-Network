@@ -53,10 +53,8 @@ model:add(cudnn.normalConv(prev_fDim,next_fDim,kernelSz,kernelSz,1,1,(kernelSz-1
 criterion = nn.MSECriterion()
 
 cudnn.convert(model, cudnn)
-cudnn.convert(VGGNet, cudnn)
 
 model:cuda()
-VGGNet:cuda()
 criterion:cuda()
 cudnn.fastest = true
 cudnn.benchmark = true
