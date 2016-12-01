@@ -4,9 +4,10 @@
 Implemented SRResNet(mse loss) v1.
 Yields the same performance with paper.
 
-##Result
+SRResNet branch is implementation of SRResNet
+SRGAN branch is implementation of SRGAN which is not finished
 
-
+##Result(SRResNet)
 scale\PSNR | me | paper
 ------------ | ------------- | -------------
 x4 | 31.95 | 31.92
