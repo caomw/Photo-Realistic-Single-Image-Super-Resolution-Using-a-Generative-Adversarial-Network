@@ -1,8 +1,8 @@
 mode = "train"
 GenModelName = "GenModel.net"
 DisModelName = "DisModel.net"
-continue = true
-continue_iter = 16e4
+continue = 0
+continue_iter = false
 
 db_dir = "/media/sda1/Data/ILSVRC/SR_ILSVRC2015_val_4_rgb/"
 test_dir = "/media/sda1/Data/SR/"
@@ -18,7 +18,7 @@ inputDim = 3
 outputDim = 3
 n = 15
 
-lr = 1e-5 --1e-4
+lr = 1e-4
 b1 = 9e-1
 batchSz = 16
 iter_lr_decay = 1e5
