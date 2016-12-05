@@ -20,7 +20,8 @@ if mode == "train" then
     
     if continue == true then
         print("model loading...")
-        model = torch.load(save_dir .. modelName)
+        GenModel = torch.load(save_dir .. GenModelName)
+        DisModel = torch.load(save_dir .. DisModelName)
     end
 
     trainData, trainLabel = load_data()
@@ -35,9 +36,7 @@ if mode == "train" then
     end
     fp_err:close()
     fp_PSNR:close()
-end
 
-
-if mode == "test" then
+elseif mode == "test" then
     test()
 end

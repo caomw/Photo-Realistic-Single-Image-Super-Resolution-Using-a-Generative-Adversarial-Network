@@ -50,10 +50,12 @@ function test()
     
     if mode == "test" then
         print("model loading...")
-        model = torch.load(save_dir .. modelName)
+        GenModel = torch.load(save_dir .. GenModelName)
+        DisModel = torch.load(save_dir .. DisModelName)
     end
     
-    model:evaluate()
+    GenModel:evaluate()
+    DisModel:evaluate()
     
     print('==> testing:')
     PSNR_sum = 0 
@@ -67,7 +69,7 @@ function test()
         input = input:cuda()
         input = torch.reshape(input,1,inputDim,insz[2],insz[3])
         
-        local output = model:forward(input)
+        local output = GenModel:forward(input)
         input = torch.reshape(input,inputDim,insz[2],insz[3])
         output = torch.reshape(output,outputDim,targetsz[2],targetsz[3])
         

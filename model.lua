@@ -4,9 +4,11 @@ require 'cudnn'
 require 'module/normalConv'
 require 'module/normalLinear'
 require 'module/normalDeconv'
+require 'tvnorm-nn'
 dofile 'etc.lua'
 
 
+--[===[
 GenModel = nn.Sequential()
 kernelSz = 3
 prev_fDim = inputDim
@@ -49,7 +51,7 @@ kernelSz = 17
 prev_fDim = next_fDim
 next_fDim = outputDim
 GenModel:add(cudnn.normalConv(prev_fDim,next_fDim,kernelSz,kernelSz,1,1,(kernelSz-1)/2,(kernelSz-1)/2,0,math.sqrt(2/(kernelSz*kernelSz*prev_fDim))))
-
+--]===]
 
 filename = paths.concat(save_dir, "SRResNet.net")
 GenModel = torch.load(filename)
@@ -115,7 +117,7 @@ DisModel:add(nn.RReLU())
 DisModel:add(nn.SpatialBatchNormalization(next_fDim))
 
 prev_fDim = 512
-next_fDim = next_fDim*outputSz*outputSz
+next_fDim = next_fDim*outputSz/16*outputSz/16
 DisModel:add(nn.View(next_fDim):setNumInputDims(3))
 DisModel:add(nn.normalLinear(next_fDim,1024,0,math.sqrt(2/next_fDim)))
 DisModel:add(nn.RReLU())
@@ -124,6 +126,7 @@ DisModel:add(nn.Sigmoid())
 
 mse = nn.MSECriterion()
 bce = nn.BCECriterion()
+tv = nn.SpatialTVNormCriterion()
 
 cudnn.convert(GenModel, cudnn)
 cudnn.convert(DisModel, cudnn)
@@ -132,5 +135,6 @@ GenModel:cuda()
 DisModel:cuda()
 mse:cuda()
 bce:cuda()
+tv:cuda()
 cudnn.fastest = true
 cudnn.benchmark = true

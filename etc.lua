@@ -1,10 +1,11 @@
 mode = "train"
-modelName = "model.net"
-continue = false
-continue_iter = 0
+GenModelName = "GenModel.net"
+DisModelName = "DisModel.net"
+continue = true
+continue_iter = 16e4
 
-db_dir = "/home/mks0601/workspace/Data/SR_ILSVRC2015_val_4_rgb/"
-test_dir = "/home/mks0601/workspace/Data/SR/"
+db_dir = "/media/sda1/Data/ILSVRC/SR_ILSVRC2015_val_4_rgb/"
+test_dir = "/media/sda1/Data/SR/"
 save_dir = db_dir .. "model_save/"
 testDataSz = 5
 trainScale = {4}
@@ -17,10 +18,11 @@ inputDim = 3
 outputDim = 3
 n = 15
 
-lr = 1e-4
+lr = 1e-5 --1e-4
 b1 = 9e-1
 batchSz = 16
-iterLimit = 1e6 - continue_iter
+iter_lr_decay = 1e5
+iterLimit = 2e5 - continue_iter
 
 
 
@@ -34,12 +36,12 @@ function combine_and_flatten_parameters(...)
       table.insert(gradParameters, g[i])
     end
     if i == 1 then
-        GenParamNum = nn.Module.flatten(gradParameters):size()
+        GenParamNum = nn.Module.flatten(gradParameters):size()[1]
     else
-        DisParamNum = nn.Module.flatten(gradParameters):size()
+        DisParamNum = nn.Module.flatten(gradParameters):size()[1]
     end
 
-    print(GenParamNum,DisParamNum)
+    
 
   end
   return nn.Module.flatten(parameters), nn.Module.flatten(gradParameters)
