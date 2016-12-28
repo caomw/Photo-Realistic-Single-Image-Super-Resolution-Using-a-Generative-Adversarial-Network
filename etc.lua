@@ -1,12 +1,12 @@
-mode = "train"
-modelName = "model.net"
+mode = "test"
+modelName = "SRResNet.net"
 continue = false
 continue_iter = 0
 
-db_dir = "/home/mks0601/workspace/Data/SR_ILSVRC2015_val_4_rgb/"
-test_dir = "/home/mks0601/workspace/Data/SR/"
+db_dir = "/media/sda1/Data/ILSVRC/SR_ILSVRC2015_val_4_rgb/"
+test_dir = "/media/sda1/Data/SR/Test/BSD100/parsed/"
 save_dir = db_dir .. "model_save/"
-testDataSz = 5
+testDataSz = 100
 trainScale = {4}
 testScale = 4
 
