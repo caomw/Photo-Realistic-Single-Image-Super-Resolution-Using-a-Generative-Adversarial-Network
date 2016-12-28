@@ -1,15 +1,11 @@
 require 'torch'
 require 'cunn'
-require "data.lua"
-dofile "etc.lua"
     
-
-local trainData
-local trainLabel
 
 torch.setdefaulttensortype('torch.FloatTensor')
 math.randomseed(os.time())
 
+dofile "etc.lua"
 dofile "data.lua"
 dofile "model.lua"
 dofile "train.lua"

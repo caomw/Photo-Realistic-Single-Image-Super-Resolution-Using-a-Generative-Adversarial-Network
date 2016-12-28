@@ -31,12 +31,22 @@ local function loadTestData(id)
 
     local hei = fpSize:read()
     local wid = fpSize:read()
+    local dim = fpSize:read()
 
-    local input = torch.ByteTensor(fpX:readByte(inputDim*hei/poolFactor*wid/poolFactor)):type('torch.FloatTensor')
-    local target = torch.ByteTensor(fpY:readByte(outputDim*hei*wid)):type('torch.FloatTensor')
+    local input = torch.ByteTensor(fpX:readByte(dim*hei/poolFactor*wid/poolFactor)):type('torch.FloatTensor')
+    local target = torch.ByteTensor(fpY:readByte(dim*hei*wid)):type('torch.FloatTensor')
+    input = torch.reshape(input,dim,hei/poolFactor,wid/poolFactor)
+    target = torch.reshape(target,dim,hei,wid)
+    
+    if tonumber(dim) == 1 then
+        input_ = input:clone()
+        input = torch.cat(input,input_,1)
+        input = torch.cat(input,input_,1)
 
-    input = torch.reshape(input,inputDim,hei/poolFactor,wid/poolFactor)
-    target = torch.reshape(target,outputDim,hei,wid)
+        target_ = target:clone()
+        target = torch.cat(target,target_,1)
+        target = torch.cat(target,target_,1)
+    end
     
     input = input/255
     
