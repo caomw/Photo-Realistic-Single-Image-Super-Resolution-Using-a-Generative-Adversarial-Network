@@ -98,9 +98,9 @@ function test()
         outputY = rgb2y(output)
         targetY = rgb2y(target)
 
-        image.save("result/input_" .. did .. ".jpg",input/255)
-        image.save("result/output_" .. did .. ".jpg",output/255)
-        image.save("result/target_" .. did .. ".jpg",target/255)
+        --image.save("result/input_" .. did .. ".jpg",input/255)
+        --image.save("result/output_" .. did .. ".jpg",output/255)
+        --image.save("result/target_" .. did .. ".jpg",target/255)
         
         PSNR_sum = PSNR_sum + PSNR(outputY,targetY)
     end
