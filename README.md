@@ -5,16 +5,15 @@ Implemented SRResNet(mse loss) v1.
 
 Yields the same performance with paper.
 
-
 SRResNet branch is implementation of SRResNet
 
-SRGAN branch is implementation of SRGAN which is not finished
-
+##Start
+th run_me.lua
 
 ##Result(SRResNet)
-scale\PSNR | me | paper
+ | Implemented | paper
 ------------ | ------------- | -------------
-x4 | 31.95 | 31.92
+Set5 | 31.95 | 31.92
+Set14 | 28.39 | 28.39
+BSD100 | 27.49 | 27.52
 
-##TODO
-implement SRGAN, VGG loss term
