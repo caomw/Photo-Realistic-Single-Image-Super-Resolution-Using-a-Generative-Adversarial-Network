@@ -1,10 +1,8 @@
 # Photo-Realistic-Single-Image-Super-Resolution-Using-a-Generative-Adversarial-Network
 (https://arxiv.org/abs/1609.04802)
 
-##Code
-to start: th run_me.lua
-
-params: etc.lua
+##Start
+th run_me.lua
 
 ##Result(SRResNet)
  | Implemented | paper
