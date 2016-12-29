@@ -8,51 +8,6 @@ require 'tvnorm-nn'
 dofile 'etc.lua'
 
 
---[===[
-GenModel = nn.Sequential()
-kernelSz = 3
-prev_fDim = inputDim
-next_fDim = 64
-GenModel:add(cudnn.normalConv(prev_fDim,next_fDim,kernelSz,kernelSz,1,1,(kernelSz-1)/2,(kernelSz-1)/2,0,math.sqrt(2/(kernelSz*kernelSz*prev_fDim))))
-GenModel:add(nn.ReLU(true))
-
-for lid = 1,n do
-    
-    concat = nn.ConcatTable()
-    concat:add(nn.Identity())
-    subGenModel = nn.Sequential()
-
-    kernelSz = 3
-    prev_fDim = next_fDim
-    next_fDim = 64
-    subGenModel:add(cudnn.normalConv(prev_fDim,next_fDim,kernelSz,kernelSz,1,1,(kernelSz-1)/2,(kernelSz-1)/2,0,math.sqrt(2/(kernelSz*kernelSz*prev_fDim))))
-    subGenModel:add(nn.SpatialBatchNormalization(next_fDim))
-    subGenModel:add(nn.ReLU(true))
-
-    subGenModel:add(cudnn.normalConv(prev_fDim,next_fDim,kernelSz,kernelSz,1,1,(kernelSz-1)/2,(kernelSz-1)/2,0,math.sqrt(2/(kernelSz*kernelSz*prev_fDim))))
-    subGenModel:add(nn.SpatialBatchNormalization(next_fDim))
-
-    concat:add(subGenModel)
-    GenModel:add(concat)
-    GenModel:add(nn.CAddTable(false))
-
-end
-
-kernelSz = 4
-prev_fDim = next_fDim
-next_fDim = 64
-GenModel:add(cudnn.normalDeconv(prev_fDim,next_fDim,kernelSz,kernelSz,2,2,(kernelSz-1)/2,(kernelSz-1)/2,1,1,0,math.sqrt(2/(kernelSz*kernelSz*prev_fDim))))
-GenModel:add(nn.ReLU(true))
-
-GenModel:add(cudnn.normalDeconv(prev_fDim,next_fDim,kernelSz,kernelSz,2,2,(kernelSz-1)/2,(kernelSz-1)/2,1,1,0,math.sqrt(2/(kernelSz*kernelSz*prev_fDim))))
-GenModel:add(nn.ReLU(true))
-
-kernelSz = 17
-prev_fDim = next_fDim
-next_fDim = outputDim
-GenModel:add(cudnn.normalConv(prev_fDim,next_fDim,kernelSz,kernelSz,1,1,(kernelSz-1)/2,(kernelSz-1)/2,0,math.sqrt(2/(kernelSz*kernelSz*prev_fDim))))
---]===]
-
 filename = paths.concat(save_dir, "SRResNet.net")
 GenModel = torch.load(filename)
 -------------------------------
@@ -126,7 +81,6 @@ DisModel:add(nn.Sigmoid())
 
 mse = nn.MSECriterion()
 bce = nn.BCECriterion()
-tv = nn.SpatialTVNormCriterion()
 
 cudnn.convert(GenModel, cudnn)
 cudnn.convert(DisModel, cudnn)
@@ -135,6 +89,5 @@ GenModel:cuda()
 DisModel:cuda()
 mse:cuda()
 bce:cuda()
-tv:cuda()
 cudnn.fastest = true
 cudnn.benchmark = true

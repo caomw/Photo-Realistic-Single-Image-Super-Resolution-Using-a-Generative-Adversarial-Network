@@ -1,13 +1,13 @@
-mode = "test"
+mode = "train"
 GenModelName = "GenModel.net"
 DisModelName = "DisModel.net"
 continue = false
 continue_iter = 0
 
 db_dir = "/media/sda1/Data/ILSVRC/SR_ILSVRC2015_val_4_rgb/"
-test_dir = "/media/sda1/Data/SR/Test/BSD100/parsed/"
+test_dir = "/media/sda1/Data/SR/Test/Set5/parsed/"
 save_dir = db_dir .. "model_save/"
-testDataSz = 100
+testDataSz = 5
 trainScale = {4}
 testScale = 4
 

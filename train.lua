@@ -115,7 +115,6 @@ function train(trainData, trainLabel)
                             confusion[2][2] = torch.sum(dis_result[{{1,curBatchDim}}]:eq(1))/curBatchDim --classify G to G
                             confusion[2][1] = 1-confusion[2][2] --classify G to R
 
-                            print(confusion)
                         end
                         
                         err = GAN_err 
@@ -140,16 +139,11 @@ function train(trainData, trainLabel)
                         GAN_dfdi = DisModel:backward(output_Gen,GAN_dfdo)
                         GenModel:backward(inputs,GAN_dfdi)
                         
-                        --tv loss
-                        tv_err = tv:forward(MSE_dfdo+GAN_dfdi,nil)/(outputSz*outputSz)
-                        tv_dfdo = tv:backward(MSE_dfdo+GAN_dfdi,nil)/(outputSz*outputSz)
-                        GenModel:backward(inputs,tv_dfdo)
-
-                        err = MSE_err + GAN_err + tv_err
+                        err = MSE_err + GAN_err
                         tot_error = tot_error + err
                         cnt_error = cnt_error + 1
                         
-                        gradParams[{{1,GenParamNum}}]:div(3*curBatchDim)
+                        gradParams[{{1,GenParamNum}}]:div(2*curBatchDim)
                         gradParams[{{GenParamNum+1,-1}}]:zero()
                     end
 
