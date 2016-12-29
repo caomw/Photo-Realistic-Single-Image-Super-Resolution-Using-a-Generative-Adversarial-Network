@@ -1,15 +1,14 @@
 # Photo-Realistic-Single-Image-Super-Resolution-Using-a-Generative-Adversarial-Network
 (https://arxiv.org/abs/1609.04802)
 
-Implemented SRResNet(mse loss) v1.
-Yields the same performance with paper.
+##Code
+to start: th run_me.lua
 
-##Result
+params: etc.lua
 
-
-scale\PSNR | me | paper
+##Result(SRResNet)
+ | Implemented | paper
 ------------ | ------------- | -------------
-x4 | 31.95 | 31.92
-
-##TODO
-implement SRGAN, VGG loss term
+Set5 | 31.95 | 31.92
+Set14 | 28.39 | 28.39
+BSD100 | 27.49 | 27.52
