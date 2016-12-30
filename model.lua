@@ -81,6 +81,8 @@ DisModel:add(nn.Sigmoid())
 
 mse = nn.MSECriterion()
 bce = nn.BCECriterion()
+tv = nn.SpatialTVNormCriterion()
+mse.sizeAverage = false
 
 cudnn.convert(GenModel, cudnn)
 cudnn.convert(DisModel, cudnn)
@@ -89,5 +91,6 @@ GenModel:cuda()
 DisModel:cuda()
 mse:cuda()
 bce:cuda()
+tv:cuda()
 cudnn.fastest = true
 cudnn.benchmark = true

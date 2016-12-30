@@ -127,8 +127,8 @@ function train(trainData, trainLabel)
                     elseif train_model == "G" then
                         --GenModel training
                         --mse loss
-                        MSE_err = mse:forward(output_Gen,targets)
-                        MSE_dfdo = mse:backward(output_Gen,targets)
+                        MSE_err = mse:forward(output_Gen,targets)/(outputSz*outputSz*curBatchDim)
+                        MSE_dfdo = mse:backward(output_Gen,targets)/(outputSz*outputSz*curBatchDim)
                         GenModel:backward(inputs,MSE_dfdo)
                         
                         --classification loss
@@ -138,12 +138,17 @@ function train(trainData, trainLabel)
                         GAN_dfdo = bce:backward(output_Dis,Dis_target)*1e-3
                         GAN_dfdi = DisModel:backward(output_Gen,GAN_dfdo)
                         GenModel:backward(inputs,GAN_dfdi)
+
+                        --tv loss
+                        tv_err = tv:forward(output_Gen,nil)/(outputSz*outputSz)*2e-8
+                        tv_dfdo = tv:backward(output_Gen,nil)/(outputSz*outputSz)*2e-8
+                        GenModel:backward(inputs,tv_dfdo)
                         
-                        err = MSE_err + GAN_err
+                        err = MSE_err + GAN_err + tv_err
                         tot_error = tot_error + err
                         cnt_error = cnt_error + 1
                         
-                        gradParams[{{1,GenParamNum}}]:div(2*curBatchDim)
+                        gradParams[{{1,GenParamNum}}]:div(3*curBatchDim)
                         gradParams[{{GenParamNum+1,-1}}]:zero()
                     end
 
