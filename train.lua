@@ -76,8 +76,8 @@ function train(trainData, trainLabel)
             gradParams:zero()
             output = model:forward(inputs)
             
-            err = criterion:forward(output,targets)
-            dfdo = criterion:backward(output,targets)
+            err = criterion:forward(output,targets)/(outputSz*outputSz*curBatchDim)
+            dfdo = criterion:backward(output,targets)/(outputSz*outputSz*curBatchDim)
 
             model:backward(inputs,dfdo)
             tot_error = tot_error + err

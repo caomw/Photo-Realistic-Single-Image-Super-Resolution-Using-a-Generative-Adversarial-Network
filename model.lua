@@ -51,6 +51,7 @@ next_fDim = outputDim
 model:add(cudnn.normalConv(prev_fDim,next_fDim,kernelSz,kernelSz,1,1,(kernelSz-1)/2,(kernelSz-1)/2,0,math.sqrt(2/(kernelSz*kernelSz*prev_fDim))))
 
 criterion = nn.MSECriterion()
+criterion.sizeAverage = false
 
 cudnn.convert(model, cudnn)
 
