@@ -140,15 +140,15 @@ function train(trainData, trainLabel)
                         GenModel:backward(inputs,GAN_dfdi)
 
                         --tv loss
-                        tv_err = tv:forward(output_Gen,nil)/(outputSz*outputSz)*2e-8
-                        tv_dfdo = tv:backward(output_Gen,nil)/(outputSz*outputSz)*2e-8
+                        --tv_err = tv:forward(output_Gen,nil)/(outputSz*outputSz)*2e-8
+                        --tv_dfdo = tv:backward(output_Gen,nil)/(outputSz*outputSz)*2e-8
                         GenModel:backward(inputs,tv_dfdo)
                         
-                        err = MSE_err + GAN_err + tv_err
+                        err = MSE_err + GAN_err --+ tv_err
                         tot_error = tot_error + err
                         cnt_error = cnt_error + 1
                         
-                        gradParams[{{1,GenParamNum}}]:div(3*curBatchDim)
+                        gradParams[{{1,GenParamNum}}]:div(2*curBatchDim)
                         gradParams[{{GenParamNum+1,-1}}]:zero()
                     end
 
