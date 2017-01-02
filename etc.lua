@@ -21,7 +21,7 @@ n = 15
 lr = 1e-4
 b1 = 9e-1
 batchSz = 16
-iter_lr_decay = 1e5
+iter_lr_decay = 1e5 - continue_iter
 iterLimit = 2e5 - continue_iter
 
 
