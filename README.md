@@ -4,7 +4,7 @@
 ##Branch
 SRResNet: Implementation of SRResNet(MSE loss)
 
-SRGAN: Implementation of SRGAN(MSE loss + Adversarial loss + TV loss) (not finished)
+SRGAN: Implementation of SRGAN(MSE loss + Adversarial loss + TV loss)
 
 ##Result(SRResNet)
  | Implemented | paper
